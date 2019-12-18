@@ -1,2 +1,8 @@
-# ui_seminarska2
-Second project for UI
+# Seminarska naloga 2
+
+## Preiskovalni algoritmi
+
+Ekipa: Tilen, Marko
+
+
+
