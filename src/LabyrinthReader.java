@@ -4,11 +4,15 @@ import java.util.Scanner;
 
 public class LabyrinthReader {
 
+    // matrix used to store values from the labyrinth file.
     private int[][] labyrinthMatrix;
 
     public LabyrinthReader(String file) throws FileNotFoundException {
 
         Scanner scr = new Scanner(new FileReader(file));
+
+        ////////////////////////////////////////////////////////////////////
+        // Reading first line of the file to find dimensions of the matrix
 
         String s = "";
         if(scr.hasNext())
@@ -20,10 +24,20 @@ public class LabyrinthReader {
 
         labyrinthMatrix = new int[dimension][dimension];
 
+        /////////////////////////////////////////////////////////////////
+
+        // Writing the first line to the matrix.
+
         for(int j = 0; j < labyrinthMatrix[0].length; j++) {
 
             labyrinthMatrix[0][j] = Integer.parseInt(sArray[j]);
         }
+
+        ////////////////////////////////////////////////////////
+
+
+        //////////////////////////////
+        // Reading other lines and writing them to the matrix.
 
         int i = 1;
         while(scr.hasNextLine()) {
@@ -43,6 +57,7 @@ public class LabyrinthReader {
 
     }
 
+    // Returns the labyrinth matrix.
     public int[][] getLabyrinth() {
         return labyrinthMatrix;
     }
