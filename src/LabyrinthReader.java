@@ -57,4 +57,16 @@ public class LabyrinthReader {
         return labyrinthMatrix;
     }
 
+    // Prints the labyrinth matrix.
+    public void printLabyrinth() {
+
+        for(int[] e1 : labyrinthMatrix) {
+            for(int e2 : e1) {
+                System.out.print(e2 + " ");
+            }
+            System.out.println();
+        }
+
+    }
+
 }
