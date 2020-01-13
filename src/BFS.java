@@ -1,33 +1,35 @@
-
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Stack;
+import java.util.LinkedList;
+import java.util.Queue;
 
-public class DFS {
+public class BFS {
 
     public static void search(int[][] graph, int startNode, ArrayList<Integer> endNodes, LabyrinthReader lr)
     {
         boolean[] marked = new boolean[graph.length];
         int[] from = new int[graph.length];
 
-        Stack<Integer> stack = new Stack<Integer>();
+        Queue<Integer> queue = new LinkedList<Integer>();
 
-        from[startNode] = -1;
         marked[startNode] = true;
-        stack.push(startNode);
+        from[startNode] = -1;
 
-        System.out.println("Iskanje DFS");
+        queue.add(startNode);
+
+
+        System.out.println("Iskanje BFS");
         int stPremikov = 0;
-        while(!stack.isEmpty())
+        while(!queue.isEmpty())
         {
             stPremikov++;
-
-            int curNode = stack.peek();
+            int curNode = queue.remove();
 
             if (endNodes.contains(curNode))
             {
 
                 int vsota = 0;
+
                 while (true)
                 {
                     curNode = from[curNode];
@@ -36,7 +38,6 @@ public class DFS {
                             System.out.print(lr.getNodeWeight(curNode) + "+");
                             vsota += lr.getNodeWeight(curNode);
                         }
-
                     }
 
                     else
@@ -50,39 +51,28 @@ public class DFS {
                 return;
             }
 
-            // najdi neobiskanega naslednjika
-            boolean found = false;
             for (int nextNode = 0; nextNode < graph[curNode].length; nextNode++)
             {
                 if (graph[curNode][nextNode] == 1 && !marked[nextNode])
                 {
                     marked[nextNode] = true;
                     from[nextNode] = curNode;
-                    stack.push(nextNode);
-
-                    found = true;
-                    break;
+                    queue.add(nextNode);
                 }
-            }
-
-            if (!found)
-            {
-                stack.pop();
-                //System.out.println("Odstranjum s sklada vozlisce " + curNode);
             }
         }
     }
 
     public static void main(String[] args) throws FileNotFoundException {
 
-        LabyrinthReader lr = new LabyrinthReader("labyrinths/labyrinth_5.txt");
+        LabyrinthReader lr = new LabyrinthReader("labyrinths/labyrinth_1.txt");
 
         int[][] graph = lr.getAdjacencyMatrix();
 
         int startNode = lr.getStartNode();
         ArrayList<Integer> endNodes = lr.getEndNodes();
 
-        DFS.search(graph, startNode, endNodes, lr);
+        BFS.search(graph, startNode, endNodes, lr);
 
     }
 
