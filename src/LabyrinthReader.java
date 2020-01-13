@@ -7,10 +7,13 @@
  * @author  Tilen Berlak
  * @version 1.0
  * @since   02-1-2020
+ *
  */
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class LabyrinthReader {
@@ -120,6 +123,42 @@ public class LabyrinthReader {
 
     }
 
+    public int getStartNode() {
+
+        int curNode = 0;
+        for(int i = 0; i < this.labyrinthMatrix.length; i++) {
+            for (int j = 0; j < this.labyrinthMatrix[i].length; j++) {
+
+                if(this.labyrinthMatrix[i][j] == -2) {
+                    return curNode;
+                }
+
+                curNode++;
+            }
+        }
+
+        return -1;
+    }
+
+    public ArrayList<Integer> getEndNodes() {
+
+        ArrayList<Integer> endNodes = new ArrayList<Integer>();
+
+        int curNode = 0;
+        for(int i = 0; i < this.labyrinthMatrix.length; i++) {
+            for(int j = 0; j < this.labyrinthMatrix[i].length; j++) {
+
+                if(this.labyrinthMatrix[i][j] == -3) {
+                    endNodes.add(curNode);
+                }
+
+                curNode++;
+            }
+        }
+
+        return endNodes;
+    }
+
     /**
      * This method is used to find and return the indecies
      * of the end points (-3) in the labyrinth matrix.
@@ -156,4 +195,173 @@ public class LabyrinthReader {
         return endIndecies;
 
     }
+
+    public int[][] getAdjacencyMatrix() {
+
+        int numOfNodes = this.labyrinthMatrix.length * this.labyrinthMatrix.length;
+
+        int[][] graph = new int[numOfNodes][numOfNodes];
+
+        int curNode = 0;
+        for(int i = 0; i < this.labyrinthMatrix.length; i++) {
+
+            for(int j = 0; j < this.labyrinthMatrix[i].length; j++) {
+
+                if(this.labyrinthMatrix[i][j] != -1) {
+
+                    if(i == 0) {
+
+                        if(j == 0) {
+
+                            graph = lookDown(graph, i, j, curNode);
+                            graph = lookRight(graph, i, j, curNode);
+
+                        } else if( j == this.labyrinthMatrix[i].length - 1) {
+
+                            graph = lookLeft(graph, i, j, curNode);
+                            graph = lookDown(graph, i, j, curNode);
+
+                        } else {
+
+                            graph = lookLeft(graph, i, j, curNode);
+                            graph = lookDown(graph, i, j, curNode);
+                            graph = lookRight(graph, i, j, curNode);
+
+                        }
+                    } else if( i == this.labyrinthMatrix.length - 1) {
+
+                        if(j == 0) {
+
+                            graph = lookUp(graph, i, j, curNode);
+                            graph = lookRight(graph, i, j, curNode);
+
+                        } else if( j == this.labyrinthMatrix[i].length - 1) {
+
+                            graph = lookLeft(graph, i, j, curNode);
+                            graph = lookDown(graph, i, j, curNode);
+
+                        } else {
+
+                            graph = lookLeft(graph, i, j, curNode);
+                            graph = lookDown(graph, i, j, curNode);
+                            graph = lookRight(graph, i, j, curNode);
+
+                        }
+
+                    } else if(j == 0) {
+
+                        graph = lookUp(graph, i, j, curNode);
+                        graph = lookDown(graph, i, j, curNode);
+                        graph = lookRight(graph, i, j, curNode);
+
+                    } else if(j == this.labyrinthMatrix[i].length) {
+
+                        graph = lookUp(graph, i, j, curNode);
+                        graph = lookLeft(graph, i, j, curNode);
+                        graph = lookDown(graph, i, j, curNode);
+
+                    } else {
+
+                        graph = lookUp(graph, i, j, curNode);
+                        graph = lookLeft(graph, i, j, curNode);
+                        graph = lookDown(graph, i, j, curNode);
+                        graph = lookRight(graph, i, j, curNode);
+
+                    }
+                }
+
+                curNode++;
+            }
+        }
+
+        return graph;
+    }
+
+    private int[][] lookUp(int[][] graph, int i, int j, int curNode) {
+
+        // up
+        if(this.labyrinthMatrix[i-1][j] >= 0 || this.labyrinthMatrix[i-1][j] == -3) {
+
+            graph[curNode][curNode - this.labyrinthMatrix.length] = 1;
+
+        }
+
+        return graph;
+    }
+
+    private int[][] lookDown(int[][] graph, int i, int j, int curNode) {
+
+        // down
+        if(this.labyrinthMatrix[i+1][j] >= 0 || this.labyrinthMatrix[i+1][j] == -3) {
+
+            graph[curNode][curNode + this.labyrinthMatrix.length] = 1;
+
+        }
+
+        return graph;
+    }
+
+    private int[][] lookLeft(int[][] graph, int i, int j, int curNode) {
+
+        // left
+        if(this.labyrinthMatrix[i][j-1] >= 0 || this.labyrinthMatrix[i][j-1] == -3) {
+
+            graph[curNode][curNode - 1] = 1;
+
+        }
+
+        return graph;
+    }
+
+    private int[][] lookRight(int[][] graph, int i, int j, int curNode) {
+
+        // right
+        if(this.labyrinthMatrix[i][j+1] >= 0 || this.labyrinthMatrix[i][j+1] == -3) {
+
+            graph[curNode][curNode + 1] = 1;
+
+        }
+
+        return graph;
+
+    }
+
+    public int getNodeWeight(int node) {
+
+        int curNode = 0;
+        for (int i = 0; i < this.labyrinthMatrix.length; i++) {
+            for (int j = 0; j < this.labyrinthMatrix[i].length; j++) {
+
+                if(curNode == node) {
+
+                    return this.labyrinthMatrix[i][j];
+
+                }
+
+                curNode++;
+
+            }
+        }
+
+        return 0;
+    }
+
+    public static void main(String[] args) throws FileNotFoundException {
+
+        LabyrinthReader lr = new LabyrinthReader("labyrinths/labyrinth_1.txt");
+
+        int[][] graph = lr.getAdjacencyMatrix();
+
+        for(int[] e1 : graph) {
+            for(int e2 : e1) {
+                System.out.print(e2 + " ");
+            }
+            System.out.println();
+
+        }
+
+    }
+
+
+
 }
