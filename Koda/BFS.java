@@ -1,162 +1,83 @@
-package Koda;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 
-class Node{
-    int x,y, dist;
-
-    Node(int x, int y, int dist){
-        this.x=x;
-        this.y=y;
-		this.dist=dist;
-		
-		
-    }
-};
-
-public class BFS {
-    private static final int M = 11;
-	private static final int N = 11;
-
-	// Below arrays details all 4 possible movements from a cell
-	private static final int row[] = { -1, 0, 0, 1 };
-	private static final int col[] = { 0, -1, 1, 0 };
-    /*
+public class BSF {
+	 /*
      * Vrednost | Pomen
      *    -1    | Zid
      *  >= 0    | Hodnik
      *    -2    | Začetno polje
      *    -3    | Ciljno polje
      */
-     static boolean isValid(int mat[][], boolean visited[][], int row, int col)
+	public static void search(int[][] graph, int startNode, ArrayList<Integer> endNodes, LabyrinthReader lr )
 	{
-		return (row >= 0) && (row < M) && (col >= 0) && (col < N)
-                        && mat[row][col] >= 0 && !visited[row][col] ;
-    }
-     static void algoritm(int mat[][], int i, int j, int x, int y)
-	{
-		// construct a matrix to keep track of visited cells
-		boolean[][] visited = new boolean[M][N];
-
-		// create an empty queue
-		Queue<Node> q = new ArrayDeque<>();
-
-		// mark source cell as visited and enqueue the source node
-		visited[i][j] = true;
-		q.add(new Node(i, j, 0));
+		boolean[] marked = new boolean[graph.length];
+		int[] from = new int[graph.length];
 		
-		// stores length of longest path from source to destination
-		int min_dist = Integer.MAX_VALUE;
-
-		// run till queue is not empty
-		while (!q.isEmpty())
+		
+		Stack<Integer> stack = new Stack<Integer>();
+        
+        from[startNode] = -1;
+		marked[startNode] = true;
+		stack.push(startNode);
+	
+		System.out.println("Dajem v vrsto vozlisce " + startNode);
+		
+		while(!stack.isEmpty())
 		{
-			// pop front node from queue and process it
-			Node node = q.poll();
+			int curNode = stack.peek();
+			System.out.println("Odstranjujem iz vrste vozlisce " + curNode);
 			
-			
-			// (i, j) represents current cell and dist stores its
-			// minimum distance from the source
-			i = node.x;
-			j = node.y;
-			int a=i;
-			int b=j;
-			int dist = node.dist;
-			
-			System.out.println("["+node.x+","+node.y+"]");
-			// if destination is found, update min_dist and stop
-			if (i == x && j == y)
+			if (endNodes.contains(curNode))
 			{
+				System.out.println("Resitev BFS v vozliscu " + curNode);
+				System.out.print("Pot: " + curNode);
 				
-					
-				min_dist = dist;
-			
-				break;
-			}
-
-			// check for all 4 possible movements from current cell
-			// and enqueue each valid movement
-			for (int k = 0; k < 4; k++)
-			{
-				// check if it is possible to go to position
-				// (i + row[k], j + col[k]) from current position
-				if (isValid(mat, visited, i + row[k], j + col[k]))
+				while (true)
 				{
-					// mark next cell as visited and enqueue it
-					visited[i + row[k]][j + col[k]] = true;
-					q.add(new Node(i + row[k], j + col[k], dist+(node.x+node.y)));
-
+					curNode = from[curNode];
+					if (curNode != -1)
+						System.out.print(" <-- " + curNode);
+					else
+						break;
 				}
 				
+				return;
 			}
-		}
-
-		if (min_dist != Integer.MAX_VALUE) {
-			System.out.print("The shortest path from source to destination " +
-									 "has length " + min_dist);
-		}
-		else {
-			System.out.print("Destination can't be reached from given source");
-		}
-	}
-
-    public static void main(String[] args) throws FileNotFoundException {
-  
-		int [][] mat={
-			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1 },
-			{-1,-2, 4, 4,-1, 4, 4, 4, 4, 4,-1 },
-			{-1,-1,-1, 4,-1, 4,-1,-1,-1, 4,-1 },
-			{-1, 4, 4, 4, 4, 4,-1, 4, 4, 4,-1 },
-			{-1, 4,-1, 4,-1, 4,-1, 4,-1, 4,-1 },
-			{-1, 4,-1, 4,-1, 4,-1,-3,-1, 4,-1 },
-			{-1, 4,-1, 4,-1, 4,-1,-1,-1, 4,-1 },
-			{-1, 4, 4, 4,-1, 4, 4, 4, 4, 4,-1 },
-			{-1,-1,-1, 4,-1, 4,-1, 4,-1, 4,-1 },
-			{-1, 4, 4, 4, 4, 4, 4, 4,-1, 4,-1 },
-			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1 }
-		};
-           
-        
-        int startX=1;
-	int startY=1;
-		        	 
-        int konecX=7;
-        int konecY=5;
-
-        algoritm(mat, startX,startY, konecX, konecY);
-
-/*
-private int konec(int mat[][]){
-	int[] koncna =new int[2];
-
-		for (int j = 0; j < mat.length; j++) {
-            for (int g = 0; g < mat[j].length; g++) {
-
-                if (mat[j][g] == -3) {
-                    koncna[0] = j;
-					koncna[1] = g;			
-				}			
-			}
-			
-		}
-		return koncna[0] & koncna[1];
-
-}
-	public int start (int mat[][]){
-		int[] startIndecies = new int[2];
-
-        for(int i = 0; i < mat.length; i++) {
-            for(int j = 0; j < mat[i].length; j++) {
-
-                if(mat[i][j] == -2) {
-                    startIndecies[0] = i;
-                    startIndecies[1] = j;
-                    
+			boolean found = false;
+			for (int nextNode = 0; nextNode < graph[curNode].length; nextNode++)
+			{
+				if (graph[curNode][nextNode] == 1 && !marked[nextNode])
+				{
+					marked[nextNode] = true;
+					from[nextNode] = curNode;
+					stack.push(nextNode);
+					
+					System.out.println("Dajem v vrsto vozlisce " + nextNode);
+                    found =true;
+                    break;
                 }
-			}	
+            }
+            if(!found)
+                stack.pop();
+		}
 	}
-	return startIndecies[0] & startIndecies[1];
-*/
-}}
+	
+	public static void main(String[] args) throws FileNotFoundException
+	{
+        LabyrinthReader lr = new LabyrinthReader("Matrike/labyrinth_1.txt");
+
+        int[][] graph = lr.getAdjacencyMatrix();
+
+        int startNode = lr.getStartNode();
+        ArrayList<Integer> endNodes = lr.getEndNodes();
+		
+		
+		BSF.search(graph, startNode, endNodes,lr);
+
+	}
+
