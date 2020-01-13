@@ -123,7 +123,7 @@ public class BFS {
            
         
         int startX=1;
-		int startY=1;
+	int startY=1;
 		        	 
         int konecX=7;
         int konecY=5;
