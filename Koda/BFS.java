@@ -1,8 +1,5 @@
 package Koda;
-/*
-Napaka je v vrstici 64, ker sesteva kolilko node je prehodilo,
-namesto vrednosti polja.
-*/
+
 import java.io.FileNotFoundException;
 import java.util.ArrayDeque;
 import java.util.Queue;
