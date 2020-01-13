@@ -13,7 +13,9 @@ class Node{
     Node(int x, int y, int dist){
         this.x=x;
         this.y=y;
-        this.dist=dist;
+		this.dist=dist;
+		
+		
     }
 };
 
@@ -34,7 +36,7 @@ public class BFS {
      static boolean isValid(int mat[][], boolean visited[][], int row, int col)
 	{
 		return (row >= 0) && (row < M) && (col >= 0) && (col < N)
-                        && mat[row][col] != -1 && !visited[row][col] ;
+                        && mat[row][col] >= 0 && !visited[row][col] ;
     }
      static void algoritm(int mat[][], int i, int j, int x, int y)
 	{
@@ -47,7 +49,7 @@ public class BFS {
 		// mark source cell as visited and enqueue the source node
 		visited[i][j] = true;
 		q.add(new Node(i, j, 0));
-
+		
 		// stores length of longest path from source to destination
 		int min_dist = Integer.MAX_VALUE;
 
@@ -56,17 +58,24 @@ public class BFS {
 		{
 			// pop front node from queue and process it
 			Node node = q.poll();
-
+			
+			
 			// (i, j) represents current cell and dist stores its
 			// minimum distance from the source
 			i = node.x;
 			j = node.y;
+			int a=i;
+			int b=j;
 			int dist = node.dist;
 			
+			System.out.println("["+node.x+","+node.y+"]");
 			// if destination is found, update min_dist and stop
 			if (i == x && j == y)
 			{
+				
+					
 				min_dist = dist;
+			
 				break;
 			}
 
@@ -80,8 +89,10 @@ public class BFS {
 				{
 					// mark next cell as visited and enqueue it
 					visited[i + row[k]][j + col[k]] = true;
-					q.add(new Node(i + row[k], j + col[k], dist + 1));
+					q.add(new Node(i + row[k], j + col[k], dist+(node.x+node.y)));
+
 				}
+				
 			}
 		}
 
@@ -95,43 +106,60 @@ public class BFS {
 	}
 
     public static void main(String[] args) throws FileNotFoundException {
-        LabyrinthReader labirint = new LabyrinthReader("Matrike\\labyrinth_1.txt");
-        int[][] mat = labirint.getLabyrinth();
+  
+		int [][] mat={
+			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1 },
+			{-1,-2, 4, 4,-1, 4, 4, 4, 4, 4,-1 },
+			{-1,-1,-1, 4,-1, 4,-1,-1,-1, 4,-1 },
+			{-1, 4, 4, 4, 4, 4,-1, 4, 4, 4,-1 },
+			{-1, 4,-1, 4,-1, 4,-1, 4,-1, 4,-1 },
+			{-1, 4,-1, 4,-1, 4,-1,-3,-1, 4,-1 },
+			{-1, 4,-1, 4,-1, 4,-1,-1,-1, 4,-1 },
+			{-1, 4, 4, 4,-1, 4, 4, 4, 4, 4,-1 },
+			{-1,-1,-1, 4,-1, 4,-1, 4,-1, 4,-1 },
+			{-1, 4, 4, 4, 4, 4, 4, 4,-1, 4,-1 },
+			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1 }
+		};
+           
         
-        int[] start=labirint.getStartPoint();
-        int startX=start[0];
-        int startY=start[1];
-        
-        int[][] konec=labirint.getEndPoints();
-        int konecX=konec[0][0];
-        int konecY=konec[0][1];
+        int startX=1;
+		int startY=1;
+		        	 
+        int konecX=7;
+        int konecY=5;
 
         algoritm(mat, startX,startY, konecX, konecY);
+
 /*
+private int konec(int mat[][]){
+	int[] koncna =new int[2];
 
+		for (int j = 0; j < mat.length; j++) {
+            for (int g = 0; g < mat[j].length; g++) {
 
+                if (mat[j][g] == -3) {
+                    koncna[0] = j;
+					koncna[1] = g;			
+				}			
+			}
+			
+		}
+		return koncna[0] & koncna[1];
 
-        for(int i=0;i<lab.length;i++){
-            for(int j=0;j<lab[i].length;j++){
-                if(lab[i][j]==-1 ){
-                    System.out.println("*");
+}
+	public int start (int mat[][]){
+		int[] startIndecies = new int[2];
+
+        for(int i = 0; i < mat.length; i++) {
+            for(int j = 0; j < mat[i].length; j++) {
+
+                if(mat[i][j] == -2) {
+                    startIndecies[0] = i;
+                    startIndecies[1] = j;
+                    
                 }
-            }
-        }
-   
-    }
-   
-    void najdena_pot_do_cilja() {
-
-    }
-
-    void cena_najdene_poti() {
-
-    }
-
-    void stevilo_premikov_na_najdeni_poti() {
-
-    }*/
-    
-}
-}
+			}	
+	}
+	return startIndecies[0] & startIndecies[1];
+*/
+}}
