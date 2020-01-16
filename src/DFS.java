@@ -7,6 +7,8 @@ public class DFS {
 
     public static void search(int[][] graph, int startNode, ArrayList<Integer> endNodes, LabyrinthReader lr)
     {
+        System.out.println("Iskanje DFS v " + lr.getLabyrinthName());
+
         boolean[] marked = new boolean[graph.length];
         int[] from = new int[graph.length];
 
@@ -16,12 +18,12 @@ public class DFS {
         marked[startNode] = true;
         stack.push(startNode);
 
-        System.out.println("Iskanje DFS");
+        int globina = 0;
+        int maxGlobina = globina;
+
         int stPremikov = 0;
         while(!stack.isEmpty())
         {
-            stPremikov++;
-
             int curNode = stack.peek();
 
             if (endNodes.contains(curNode))
@@ -37,15 +39,17 @@ public class DFS {
                             vsota += lr.getNodeWeight(curNode);
                         }
 
-                    }
-
-                    else
+                    } else
                         break;
                 }
 
                 System.out.println("=" + vsota);
+
+                System.out.println();
+                System.out.println("Statistika");
                 System.out.println("Cena najdene poti: " + vsota);
                 System.out.println("Število premikov: " + stPremikov);
+                System.out.println("Največja globina: " + maxGlobina);
 
                 return;
             }
@@ -61,29 +65,39 @@ public class DFS {
                     stack.push(nextNode);
 
                     found = true;
+                    globina++;
                     break;
                 }
             }
 
+            if(globina > maxGlobina)
+                maxGlobina = globina;
+
             if (!found)
             {
                 stack.pop();
-                //System.out.println("Odstranjum s sklada vozlisce " + curNode);
+                globina--;
             }
+
+            stPremikov++;
         }
     }
 
     public static void main(String[] args) throws FileNotFoundException {
 
-        LabyrinthReader lr = new LabyrinthReader("labyrinths/labyrinth_5.txt");
+        LabyrinthReader lr = new LabyrinthReader("labyrinths/labyrinth_1.txt");
 
         int[][] graph = lr.getAdjacencyMatrix();
 
         int startNode = lr.getStartNode();
         ArrayList<Integer> endNodes = lr.getEndNodes();
 
+        long startTime = System.nanoTime();
         DFS.search(graph, startNode, endNodes, lr);
+        long executionTime = System.nanoTime() - startTime;
 
+        long nanoToMilliseconds = executionTime / 1000000;
+        System.out.println("Čas izvajanja: " + nanoToMilliseconds + " ms");
     }
 
 }

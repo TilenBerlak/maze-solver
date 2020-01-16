@@ -7,6 +7,8 @@ public class BFS {
 
     public static void search(int[][] graph, int startNode, ArrayList<Integer> endNodes, LabyrinthReader lr)
     {
+        System.out.println("Iskanje BFS v " + lr.getLabyrinthName());
+
         boolean[] marked = new boolean[graph.length];
         int[] from = new int[graph.length];
 
@@ -17,12 +19,9 @@ public class BFS {
 
         queue.add(startNode);
 
-
-        System.out.println("Iskanje BFS");
         int stPremikov = 0;
         while(!queue.isEmpty())
         {
-            stPremikov++;
             int curNode = queue.remove();
 
             if (endNodes.contains(curNode))
@@ -38,13 +37,14 @@ public class BFS {
                             System.out.print(lr.getNodeWeight(curNode) + "+");
                             vsota += lr.getNodeWeight(curNode);
                         }
-                    }
-
-                    else
+                    } else
                         break;
                 }
 
                 System.out.println("=" + vsota);
+
+                System.out.println();
+                System.out.println("Statistika");
                 System.out.println("Cena najdene poti: " + vsota);
                 System.out.println("Število premikov: " + stPremikov);
 
@@ -60,6 +60,8 @@ public class BFS {
                     queue.add(nextNode);
                 }
             }
+
+            stPremikov++;
         }
     }
 
@@ -72,7 +74,12 @@ public class BFS {
         int startNode = lr.getStartNode();
         ArrayList<Integer> endNodes = lr.getEndNodes();
 
+        long startTime = System.nanoTime();
         BFS.search(graph, startNode, endNodes, lr);
+        long executionTime = System.nanoTime() - startTime;
+
+        long nanoToMilliseconds = executionTime / 1000000;
+        System.out.println("Čas izvajanja: " + nanoToMilliseconds + " ms");
 
     }
 

@@ -7,12 +7,13 @@ public class IDDFS {
 
     public static void search(int[][] graph, int startNode, ArrayList<Integer> endNodes, LabyrinthReader lr)
     {
+        System.out.println("Iskanje IDDFS v " + lr.getLabyrinthName());
+
+        int stPremikov = 0;
         for (int depthLimit = 0; depthLimit < graph.length; depthLimit++)
         {
-
             boolean[] marked = new boolean[graph.length];
             int[] from = new int[graph.length];
-
 
             Stack<Integer> stack = new Stack<Integer>();
 
@@ -39,16 +40,17 @@ public class IDDFS {
                                 vsota += lr.getNodeWeight(curNode);
                             }
 
-                        }
-
-                        else
+                        } else
                             break;
                     }
 
                     System.out.println("=" + vsota);
-                    System.out.println("Cena najdene poti: " + vsota);
-                    System.out.println("Globina iskanja je " + depthLimit);
 
+                    System.out.println();
+                    System.out.println("Statistika");
+                    System.out.println("Cena najdene poti: " + vsota);
+                    System.out.println("Globina iskanja: " + depthLimit);
+                    System.out.println("Število premikov: " + stPremikov);
 
                     return;
                 }
@@ -77,6 +79,8 @@ public class IDDFS {
                 {
                     stack.pop();
                 }
+
+                stPremikov++;
             }
 
         }
@@ -84,14 +88,19 @@ public class IDDFS {
 
     public static void main(String[] args) throws FileNotFoundException {
 
-        LabyrinthReader lr = new LabyrinthReader("labyrinths/labyrinth_8.txt");
+        LabyrinthReader lr = new LabyrinthReader("labyrinths/labyrinth_1.txt");
 
         int[][] graph = lr.getAdjacencyMatrix();
 
         int startNode = lr.getStartNode();
         ArrayList<Integer> endNodes = lr.getEndNodes();
 
+        long startTime = System.nanoTime();
         IDDFS.search(graph, startNode, endNodes, lr);
+        long executionTime = System.nanoTime() - startTime;
+
+        long nanoToMilliseconds = executionTime / 1000000;
+        System.out.println("Čas izvajanja: " + nanoToMilliseconds + " ms");
 
     }
 

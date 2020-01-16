@@ -12,7 +12,6 @@
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -20,7 +19,7 @@ public class LabyrinthReader {
 
     // Matrix used to store values from the labyrinth file.
     private int[][] labyrinthMatrix;
-
+    private String labyrinthName;
 
     /**
      * Reads the given labyrinth configuration text file
@@ -30,6 +29,7 @@ public class LabyrinthReader {
      */
     public LabyrinthReader(String file) throws FileNotFoundException {
 
+        this.labyrinthName = file;
         Scanner scr = new Scanner(new FileReader(file));
 
         // Reading first line of the file to find dimensions of the matrix
@@ -213,59 +213,59 @@ public class LabyrinthReader {
 
                         if(j == 0) {
 
-                            graph = lookDown(graph, i, j, curNode);
-                            graph = lookRight(graph, i, j, curNode);
+                            graph = lookDown(graph, i, j, curNode, false);
+                            graph = lookRight(graph, i, j, curNode, false);
 
                         } else if( j == this.labyrinthMatrix[i].length - 1) {
 
-                            graph = lookLeft(graph, i, j, curNode);
-                            graph = lookDown(graph, i, j, curNode);
+                            graph = lookLeft(graph, i, j, curNode, false);
+                            graph = lookDown(graph, i, j, curNode, false);
 
                         } else {
 
-                            graph = lookLeft(graph, i, j, curNode);
-                            graph = lookDown(graph, i, j, curNode);
-                            graph = lookRight(graph, i, j, curNode);
+                            graph = lookLeft(graph, i, j, curNode, false);
+                            graph = lookDown(graph, i, j, curNode, false);
+                            graph = lookRight(graph, i, j, curNode, false);
 
                         }
                     } else if( i == this.labyrinthMatrix.length - 1) {
 
                         if(j == 0) {
 
-                            graph = lookUp(graph, i, j, curNode);
-                            graph = lookRight(graph, i, j, curNode);
+                            graph = lookUp(graph, i, j, curNode, false);
+                            graph = lookRight(graph, i, j, curNode, false);
 
                         } else if( j == this.labyrinthMatrix[i].length - 1) {
 
-                            graph = lookLeft(graph, i, j, curNode);
-                            graph = lookDown(graph, i, j, curNode);
+                            graph = lookLeft(graph, i, j, curNode, false);
+                            graph = lookDown(graph, i, j, curNode, false);
 
                         } else {
 
-                            graph = lookLeft(graph, i, j, curNode);
-                            graph = lookDown(graph, i, j, curNode);
-                            graph = lookRight(graph, i, j, curNode);
+                            graph = lookLeft(graph, i, j, curNode, false);
+                            graph = lookDown(graph, i, j, curNode, false);
+                            graph = lookRight(graph, i, j, curNode, false);
 
                         }
 
                     } else if(j == 0) {
 
-                        graph = lookUp(graph, i, j, curNode);
-                        graph = lookDown(graph, i, j, curNode);
-                        graph = lookRight(graph, i, j, curNode);
+                        graph = lookUp(graph, i, j, curNode, false);
+                        graph = lookDown(graph, i, j, curNode, false);
+                        graph = lookRight(graph, i, j, curNode, false);
 
                     } else if(j == this.labyrinthMatrix[i].length) {
 
-                        graph = lookUp(graph, i, j, curNode);
-                        graph = lookLeft(graph, i, j, curNode);
-                        graph = lookDown(graph, i, j, curNode);
+                        graph = lookUp(graph, i, j, curNode, false);
+                        graph = lookLeft(graph, i, j, curNode, false);
+                        graph = lookDown(graph, i, j, curNode, false);
 
                     } else {
 
-                        graph = lookUp(graph, i, j, curNode);
-                        graph = lookLeft(graph, i, j, curNode);
-                        graph = lookDown(graph, i, j, curNode);
-                        graph = lookRight(graph, i, j, curNode);
+                        graph = lookUp(graph, i, j, curNode, false);
+                        graph = lookLeft(graph, i, j, curNode, false);
+                        graph = lookDown(graph, i, j, curNode, false);
+                        graph = lookRight(graph, i, j, curNode, false);
 
                     }
                 }
@@ -277,48 +277,88 @@ public class LabyrinthReader {
         return graph;
     }
 
-    private int[][] lookUp(int[][] graph, int i, int j, int curNode) {
+    private int[][] lookUp(int[][] graph, int i, int j, int curNode, boolean weight) {
 
         // up
         if(this.labyrinthMatrix[i-1][j] >= 0 || this.labyrinthMatrix[i-1][j] == -3) {
 
-            graph[curNode][curNode - this.labyrinthMatrix.length] = 1;
+            if(weight) {
+                if(this.labyrinthMatrix[i][j] == -2) {
+                    graph[curNode][curNode - this.labyrinthMatrix.length] = 1;
+                } else {
+                    graph[curNode][curNode - this.labyrinthMatrix.length] = this.labyrinthMatrix[i][j];
+                }
+
+            } else {
+                graph[curNode][curNode - this.labyrinthMatrix.length] = 1;
+            }
+
 
         }
 
         return graph;
     }
 
-    private int[][] lookDown(int[][] graph, int i, int j, int curNode) {
+    private int[][] lookDown(int[][] graph, int i, int j, int curNode, boolean weight) {
 
         // down
         if(this.labyrinthMatrix[i+1][j] >= 0 || this.labyrinthMatrix[i+1][j] == -3) {
 
-            graph[curNode][curNode + this.labyrinthMatrix.length] = 1;
+            if(weight) {
+
+                if(this.labyrinthMatrix[i][j] == -2) {
+                    graph[curNode][curNode + this.labyrinthMatrix.length] = 1;
+                } else {
+                    graph[curNode][curNode + this.labyrinthMatrix.length] = this.labyrinthMatrix[i][j];
+                }
+
+
+            } else {
+                graph[curNode][curNode + this.labyrinthMatrix.length] = 1;
+            }
 
         }
 
         return graph;
     }
 
-    private int[][] lookLeft(int[][] graph, int i, int j, int curNode) {
+    private int[][] lookLeft(int[][] graph, int i, int j, int curNode, boolean weight) {
 
         // left
         if(this.labyrinthMatrix[i][j-1] >= 0 || this.labyrinthMatrix[i][j-1] == -3) {
 
-            graph[curNode][curNode - 1] = 1;
+            if(weight) {
+                if(this.labyrinthMatrix[i][j] == -2) {
+                    graph[curNode][curNode - 1] = 1;
+                } else {
+                    graph[curNode][curNode - 1] = this.labyrinthMatrix[i][j];
+                }
+
+
+            } else {
+                graph[curNode][curNode - 1] = 1;
+            }
 
         }
 
         return graph;
     }
 
-    private int[][] lookRight(int[][] graph, int i, int j, int curNode) {
+    private int[][] lookRight(int[][] graph, int i, int j, int curNode, boolean weight) {
 
         // right
         if(this.labyrinthMatrix[i][j+1] >= 0 || this.labyrinthMatrix[i][j+1] == -3) {
 
-            graph[curNode][curNode + 1] = 1;
+            if(weight) {
+                if(this.labyrinthMatrix[i][j] == -2) {
+                    graph[curNode][curNode + 1] = 1;
+                } else {
+                    graph[curNode][curNode + 1] = this.labyrinthMatrix[i][j];
+                }
+
+            } else {
+                graph[curNode][curNode + 1] = 1;
+            }
 
         }
 
@@ -346,19 +386,156 @@ public class LabyrinthReader {
         return 0;
     }
 
+    public int[][] getWeightGraph() {
+
+        int numOfNodes = this.labyrinthMatrix.length * this.labyrinthMatrix.length;
+
+        int[][] graph = new int[numOfNodes][numOfNodes];
+
+        int curNode = 0;
+        for(int i = 0; i < this.labyrinthMatrix.length; i++) {
+
+            for(int j = 0; j < this.labyrinthMatrix[i].length; j++) {
+
+                if(this.labyrinthMatrix[i][j] != -1) {
+
+                    if(i == 0) {
+
+                        if(j == 0) {
+
+                            graph = lookDown(graph, i, j, curNode, true);
+                            graph = lookRight(graph, i, j, curNode, true);
+
+                        } else if( j == this.labyrinthMatrix[i].length - 1) {
+
+                            graph = lookLeft(graph, i, j, curNode, true);
+                            graph = lookDown(graph, i, j, curNode, true);
+
+                        } else {
+
+                            graph = lookLeft(graph, i, j, curNode, true);
+                            graph = lookDown(graph, i, j, curNode, true);
+                            graph = lookRight(graph, i, j, curNode, true);
+
+                        }
+                    } else if( i == this.labyrinthMatrix.length - 1) {
+
+                        if(j == 0) {
+
+                            graph = lookUp(graph, i, j, curNode, true);
+                            graph = lookRight(graph, i, j, curNode, true);
+
+                        } else if( j == this.labyrinthMatrix[i].length - 1) {
+
+                            graph = lookLeft(graph, i, j, curNode, true);
+                            graph = lookDown(graph, i, j, curNode, true);
+
+                        } else {
+
+                            graph = lookLeft(graph, i, j, curNode, true);
+                            graph = lookDown(graph, i, j, curNode, true);
+                            graph = lookRight(graph, i, j, curNode, true);
+
+                        }
+
+                    } else if(j == 0) {
+
+                        graph = lookUp(graph, i, j, curNode, true);
+                        graph = lookDown(graph, i, j, curNode, true);
+                        graph = lookRight(graph, i, j, curNode, true);
+
+                    } else if(j == this.labyrinthMatrix[i].length) {
+
+                        graph = lookUp(graph, i, j, curNode, true);
+                        graph = lookLeft(graph, i, j, curNode, true);
+                        graph = lookDown(graph, i, j, curNode, true);
+
+                    } else {
+
+                        graph = lookUp(graph, i, j, curNode, true);
+                        graph = lookLeft(graph, i, j, curNode, true);
+                        graph = lookDown(graph, i, j, curNode, true);
+                        graph = lookRight(graph, i, j, curNode, true);
+
+                    }
+                }
+
+                curNode++;
+            }
+        }
+
+        return graph;
+    }
+
+    public int[] getHCost(int[][] graph) {
+
+        int[][] endNodes = getEndPoints();
+
+        int[] hCost = new int[graph.length];
+
+        int counter = 0;
+        for(int i = 0; i < this.labyrinthMatrix.length; i++) {
+
+            for(int j = 0; j < this.labyrinthMatrix[i].length; j++) {
+
+                if(this.labyrinthMatrix[i][j] == -2 || this.labyrinthMatrix[i][j] >= 0) {
+
+                    // calculate Manhattan distance
+                    int h = Math.abs(j - endNodes[0][0]) + Math.abs(i - endNodes[0][1]);
+                    int minH = h;
+                    if(endNodes.length > 1) {
+                        for(int y = 1; y < endNodes.length; y++) {
+
+                            int newH = Math.abs(j - endNodes[y][0]) + Math.abs(i - endNodes[y][1]);
+                            if(newH < minH)
+                                minH = newH;
+
+                        }
+                    }
+
+                    hCost[counter] = minH;
+                }
+
+                counter++;
+
+            }
+
+        }
+
+        return hCost;
+    }
+
+    public String getLabyrinthName() {
+        return this.labyrinthName;
+    }
+
+
     public static void main(String[] args) throws FileNotFoundException {
 
         LabyrinthReader lr = new LabyrinthReader("labyrinths/labyrinth_1.txt");
 
-        int[][] graph = lr.getAdjacencyMatrix();
+        int[][] graph = lr.getWeightGraph();
+
+        int[] hCost = lr.getHCost(graph);
 
         for(int[] e1 : graph) {
             for(int e2 : e1) {
                 System.out.print(e2 + " ");
             }
             System.out.println();
-
         }
+
+        /*int[][] graph = lr.getAdjacencyMatrix();
+
+        for(int[] e1 : graph) {
+            for(int e2 : e1) {
+                System.out.print(e2 + " ");
+            }
+            System.out.println();
+        }*/
+
+
+
 
     }
 
