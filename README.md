@@ -1,14 +1,12 @@
-# Seminarska naloga 2
+# Maze solver
 
-## Preiskovalni algoritmi
+Is a simple application that reads a custom maze (labyrinth) from a file and solves it using search algorithms.
 
-### Za implementirat
- * DFS (Depth-first search) - Iskanje v globino
- * BFS (Breadth-first search) - Iskanje v širino
- * A* (A-star) - Preiskovalni algoritem na grafu
- * ...
+## Implemented search algorithms:
 
-Ekipa: Tilen, Marko
-
-
+### 
+ * DFS (Depth-first search)
+ * IDDFS (Iterative deepening depth-first search)
+ * BFS (Breadth-first search)
+ * A* (A-star)
 
